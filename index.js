@@ -50,27 +50,33 @@ bot.on("message", async (msg) => {
       );
 
       // 2. Thêm biến môi trường
-      await axios.post(
-        `https://api.vercel.com/v9/projects/${projectName}/env`,
-        [
-          {
-            key: "TELEGRAM_BOT_TOKEN",
-            value: envToken,
-            target: ["production"]
-          },
-          {
-            key: "TELEGRAM_CHAT_ID",
-            value: envChatId,
-            target: ["production"]
-          }
-        ],
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
-            "Content-Type": "application/json"
-          }
-        }
-      );
+  const headers = {
+  Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+  "Content-Type": "application/json"
+};
+
+// Gửi biến TELEGRAM_BOT_TOKEN
+await axios.post(
+  `https://api.vercel.com/v9/projects/${projectName}/env`,
+  {
+    key: "TELEGRAM_BOT_TOKEN",
+    value: envToken,
+    target: ["production"]
+  },
+  { headers }
+);
+
+// Gửi biến TELEGRAM_CHAT_ID
+await axios.post(
+  `https://api.vercel.com/v9/projects/${projectName}/env`,
+  {
+    key: "TELEGRAM_CHAT_ID",
+    value: envChatId,
+    target: ["production"]
+  },
+  { headers }
+);
+
 
       const link = `https://${projectName}.vercel.app`;
       bot.sendMessage(chatId, `✅ Project đã tạo thành công:\n🔗 ${link}`);
